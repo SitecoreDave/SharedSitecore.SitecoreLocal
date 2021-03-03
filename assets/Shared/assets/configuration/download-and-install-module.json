@@ -29,11 +29,6 @@
       "Type": "string",
       "DefaultValue": ".\\SQLSERVER",
       "Description": "The Sql Server where databases will be installed."
-    },
-    "LoginSession": {
-      "Type": "Microsoft.PowerShell.Commands.WebRequestSession",
-      "DefaultValue": "",
-      "Description": "dev.sitecore.com login session"
     }
   },
   "Variables": {
@@ -81,8 +76,7 @@
       "Type": "DownloadFile",
       "Params": {
         "SourceUri": "[variable('Module.Url')]",
-        "DestinationPath": "[variable('Module.OriginalFileName')]",
-        "LoginSession": "[parameter('LoginSession')]"
+        "DestinationPath": "[variable('Module.OriginalFileName')]"
       },
       "Skip": "[equal(variable('Skip.Download'),'True')]"
     },

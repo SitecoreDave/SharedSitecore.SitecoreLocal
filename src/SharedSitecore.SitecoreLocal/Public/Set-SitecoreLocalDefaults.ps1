@@ -66,21 +66,64 @@ https://github.com/SitecoreDave/SharedSitecore.SitecoreLocal
 function Set-SitecoreLocalDefaults
 {
     [CmdletBinding(SupportsShouldProcess,PositionalBinding=$true)]
-    Param(
-        [string] $ConfigurationFile = "XP0-SitecoreLocal.json",
+    Param(        
+        # Configuration file name [default=[ConfigurationRoot]\[ConfigurationFileName]]
+        [Parameter(Mandatory=$false)]
+        [ValidateScript({Test-Path $_ -PathType 'Leaf'})]
+        [string]$ConfigurationFile = "",
+        
+        # Configuration file name [default=XP0-SitecoreLocal.json]
+        [Parameter(Mandatory=$false)]
+        [string]$ConfigurationFileName = "XP0-SitecoreLocal.json",
+        
+        # Configuration file name [default=\assets\[version[.\]\[ConfigurationTemplate]]
+        [Parameter(Mandatory=$false)]
+        [ValidateScript({Test-Path $_ -PathType 'Container'})]
+        [string]$ConfigurationRoot = "",
+
+        # Configuration file name [default=XP0]
+        [Parameter(Mandatory=$false)]
+        [string]$ConfigurationTemplate = "XP0",
+
         [string] $assetsRoot,
         [string] $packageRepository,
-        [string] $sitecoreVersion = "9.3.0 rev. 003498",    
-		[string] $ConfigurationTemplate = "XP0"
+        [string] $version = "9.3.0"
     )
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 	$PSScriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
 	Write-Host (Get-Parameters $MyInvocation.MyCommand.Parameters $PSBoundParameters -Message "$($PSScriptName):started" -Show -Stamp).output
+    
+    if ([string]::IsNullOrEmpty($assetsRoot)) {
+        $assetsRoot = Join-Path $PSScriptRoot "assets"
+        $srcIndex = $PSScriptRoot.IndexOf("src")
+        if ($srcIndex -ne -1) {
+            $PSRepoRoot = $PSScriptRoot.Substring(0, $srcIndex)
+            $assetsRoot = Join-Path $PSRepoRoot "assets"
+        }
+    }
+    Write-Host "Using assetsRoot:$assetsRoot"
+
+    if (!$ConfigurationRoot) { $ConfigurationRoot = Join-Path $assetsRoot "configs\$version\$ConfigurationTemplate" }
+    if (!$ConfigurationFile) { $ConfigurationFile = Join-Path $ConfigurationRoot "XP0-SitecoreLocal.json" }
 
     Write-Host "Setting Defaults and creating $ConfigurationFile"
 
-    $json = Get-Content -Raw (Join-Path $PSScriptRoot Install-SitecoreLocal.json) -Encoding Ascii | ConvertFrom-Json
+    #Write-Host "myInvocation.InvocationName:$($myInvocation.InvocationName)"
+  #  Write-Host "myInvocation.Path:$($myInvocation.Path)"
+    #Write-Host "myInvocation.ScriptName:$($myInvocation.ScriptName)"
+
+    #Write-Host "myInvocation.MyCommand.Name:$($myInvocation.MyCommand.Name)"
+    #Write-Host "myInvocation.MyCommand.Definition:$($myInvocation.MyCommand.Definition)"
+    #Write-Host "PSScriptRoot:$PSScriptRoot"
+
+    $baseConfig = Join-Path $PSScriptRoot Install-SitecoreLocal.json
+    if (!(Test-Path $baseConfig)) {
+        Write-Error "Base config not found:$baseConfig"
+        Exit 1
+    }
+    Write-Host "Using baseConfig:$baseConfig"
+    $json = Get-Content -Raw ($baseConfig) -Encoding Ascii | ConvertFrom-Json
 
     #$parametersUser = Get-Content -Raw "..\local.parameters.json.user" -ErrorAction SilentlyContinue |  ConvertFrom-Json
 
@@ -90,37 +133,24 @@ function Set-SitecoreLocalDefaults
     Write-Host "Setting default 'Assets and prerequisites' parameters"
 
     $assets = $json.assets
-
-    if (![string]::IsNullOrEmpty($assetsRoot)) {
-        $assets.root = $assetsRoot
-    }
-    else {
-        #$assets.root = "$PSScriptRoot\assets"
-		#Check for repos\docker-images it is most modern approach
-        if (!(Test-Path (Join-Path '\' 'repos\docker-images\build\packages'))){
-            if (!(Test-Path (Join-Path $pwd "assets"))){
-                $assets.root = "$PSScriptRoot\assets"
-                if (!(Test-Path $assets.root)){
-                    mkdir $assets.root
-                }            
-            } else {
-                $assets.root = Join-Path $pwd "assets"
-            }        
-        } else {
-            $assets.root = Join-Path '\' 'repos\docker-images\build\packages'
-        }
-        #$assets.root = Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) "assets"
-    }
+    if (![string]::IsNullOrEmpty($assetsRoot)) { $assets.root = $assetsRoot }
+    Write-Host "Setting assets.root:$($assets.root)"
 
     $assets.configurationRoot = Join-Path $assets.root "configs\$version\$ConfigurationTemplate"
+    Write-Host "Setting assets.configurationRoot:$($assets.configurationRoot)"
 
-    $assets.sitecoreVersion = $sitecoreversion
+    $assets.sitecoreVersion = "9.3.0 rev. 003498"
+
     if (![string]::IsNullOrEmpty($packageRepository)){
         $assets.packageRepository = $packageRepository
     }
     else {
-        $assets.packageRepository = $assets.root
+        $assets.packageRepository = Join-Path $assets.root "packages"
+        if (Test-Path (Join-Path (Split-Path $assets.root -Parent) 'docker-images\build\packages')){
+            $assets.packageRepository = Join-Path '\' 'repos\docker-images\build\packages'
+        }
     }
+    Write-Host "Setting assets.packageRepository:$($assets.packageRepository)"
 
 	$assets.psRepository = "https://sitecore.myget.org/F/sc-powershell/api/v2/"
 	$assets.psRepositoryName = "SitecoreGallery"
@@ -134,6 +164,8 @@ function Set-SitecoreLocalDefaults
 
 
     $assets.certificatesPath = Join-Path $assets.root "certs"
+
+    Write-Host "Setting assets.sharedUtilitiesRoot:$($assets.sharedUtilitiesRoot)"
 
     # Settings
     Write-Host "Setting default 'Site' parameters"
@@ -152,7 +184,7 @@ function Set-SitecoreLocalDefaults
 
     $SqlSaPassword = "Str0NgPA33w0rd!!"
     $SqlStrongPassword = $SqlSaPassword # Used for all other services
-
+    
     $sql.server = "."
     $sql.adminUser = "sa"
     $sql.adminPassword = $SqlSaPassword
@@ -214,7 +246,7 @@ function Set-SitecoreLocalDefaults
     $identityServer.configurationPath = (Get-ChildItem $assets.configurationRoot -filter "IdentityServer.json" -Recurse).FullName 
     $identityServer.name = $site.prefix + "-identityserver"
     $identityServer.url = ("https://{0}" -f $identityServer.name)
-    $identityServer.clientSecret = $ClientSecret
+    $identityServer.clientSecret = "ClientSecret"
 	
     Write-Host "Setting default 'Solr' parameters"
     # Solr Parameters

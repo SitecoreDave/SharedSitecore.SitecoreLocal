@@ -132,7 +132,7 @@ Function Install-Modules {
 
 	$moduleConfig = Join-Path $assets.configurationRoot "module-installation\module-master-install.json"
 
-	Get-SitecoreDevCredentials
+	#Get-SitecoreDevCredentials
 
 	$params = @{
 		Path                            = $moduleConfig
@@ -152,7 +152,7 @@ Function Install-Modules {
 		BootLoaderPackagePath           = $bootLoaderPackagePath
 		BootloaderConfigurationOverride = $bootloaderConfigurationOverride
 		BootloaderInstallationPath      = $bootloaderInstallationPath
-		LoginSession                    = $global:loginSession
+		#LoginSession                    = $global:loginSession
 		SolrUrl                         = $solr.url
 		SolrRoot                        = $solr.root
 		SolrService                     = $solr.serviceName

@@ -25,19 +25,43 @@
                                          "DefaultValue":  "",
                                          "Description":  "The Sql Server where databases will be installed."
                                      },
-                       "LoginSession":  {
-                                            "Type":  "Microsoft.PowerShell.Commands.WebRequestSession",
-                                            "DefaultValue":  "",
-                                            "Description":  "dev.sitecore.com login session"
+                       "xp:DatabasePrefix":  {
+                                                 "Type":  "string",
+                                                 "Reference":  "DatabasePrefix"
+                                             },
+                       "xp:ModuleConfiguration":  {
+                                                      "DefaultValue":  {
+                                                                           "id":  "xp",
+                                                                           "extract":  true,
+                                                                           "url":  "https://dev.sitecore.net/~/media/88666D3532F24973939C1CC140E12A27.ashx",
+                                                                           "fileName":  "d:\\repos\\docker-images\\build\\packages\\Sitecore 9.3.0 rev. 003498 (WDP XP0 packages).zip",
+                                                                           "source":  "sitecore",
+                                                                           "name":  "Sitecore Experience Platform",
+                                                                           "install":  true,
+                                                                           "databases":  ""
+                                                                       },
+                                                      "Type":  "psobject"
+                                                  },
+                       "xp:SiteName":  {
+                                           "Type":  "string",
+                                           "Reference":  "SiteName"
+                                       },
+                       "xp:SqlAdminPassword":  {
+                                                   "Type":  "string",
+                                                   "Reference":  "SqlAdminPassword"
+                                               },
+                       "xp:SqlAdminUser":  {
+                                               "Type":  "string",
+                                               "Reference":  "SqlAdminUser"
+                                           },
+                       "xp:SqlServer":  {
+                                            "Type":  "string",
+                                            "Reference":  "SqlServer"
                                         },
                        "spe:DatabasePrefix":  {
                                                   "Type":  "string",
                                                   "Reference":  "DatabasePrefix"
                                               },
-                       "spe:LoginSession":  {
-                                                "Type":  "Microsoft.PowerShell.Commands.WebRequestSession",
-                                                "Reference":  "LoginSession"
-                                            },
                        "spe:ModuleConfiguration":  {
                                                        "DefaultValue":  {
                                                                             "id":  "spe",
@@ -70,10 +94,6 @@
                                                   "Type":  "string",
                                                   "Reference":  "DatabasePrefix"
                                               },
-                       "jss:LoginSession":  {
-                                                "Type":  "Microsoft.PowerShell.Commands.WebRequestSession",
-                                                "Reference":  "LoginSession"
-                                            },
                        "jss:ModuleConfiguration":  {
                                                        "DefaultValue":  {
                                                                             "id":  "jss",
@@ -107,6 +127,9 @@
 
                   },
     "Includes":  {
+                     "xp":  {
+                                "Source":  "D:\\repos\\SharedSitecore.SitecoreLocal\\assets\\Shared\\assets\\configuration\\download-and-install-module.json"
+                            },
                      "spe":  {
                                  "Source":  "D:\\repos\\SharedSitecore.SitecoreLocal\\assets\\Shared\\assets\\configuration\\download-and-install-module.json"
                              },

@@ -1,9 +1,5 @@
 {
     "Parameters": {
-          "LoginSession":{
-            "Type":"Microsoft.PowerShell.Commands.WebRequestSession",
-            "Description":"Web Session to be used for downloading"
-          },
           "Source":{
               "Type":"String",
               "Description":"Source Uri for file to be downloaded"
@@ -23,8 +19,7 @@
             "Type":"DownloadFile",
             "Params":{
                 "SourceUri":"[parameter('Source')]",
-                "DestinationPath":"[parameter('Destination')]",
-                "LoginSession": "[parameter('LoginSession')]"
+                "DestinationPath":"[parameter('Destination')]"
             }
         }
     }

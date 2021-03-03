@@ -32,15 +32,6 @@
       "databases": "master,core"
     },
     {
-      "id": "spe",
-      "name": "Sitecore PowerShell Extensions",
-      "fileName": "Sitecore.PowerShell.Extensions-6.0.scwdp.zip",
-      "url": "https://dev.sitecore.net/~/media/A6BD2B77DEDD44F1BB8E8ED575D24D12.ashx",
-      "install": true,
-      "convert": false,
-      "databases": "master,core"
-    },
-    {
       "id": "jss",
       "name": "JavaScript Services",
       "fileName": "Sitecore JavaScript Services Server for Sitecore 9.2 XP 12.0.0 rev. 190522.scwdp.zip",

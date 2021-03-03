@@ -266,7 +266,7 @@ function Install-SitecoreLocal {
 		if (!$ConfigurationFile) { $ConfigurationFile = Join-Path $ConfigurationRoot $ConfigurationFileName }
 
 		if (!$certs) { $certs = Join-Path $assetsRoot "certs" }
-		if (!$assetsJsonPath) { $assetsJsonPath = Join-Path $ConfigurationRoot 'assets-basic.json' }		
+		if (!$assetsJsonPath) { $assetsJsonPath = Join-Path $ConfigurationRoot 'assets-basic.json' }
 		
 		
 		if(!$LicenseFile) {	$LicenseFile = "$PSRootDrive\license\license.xml" }
@@ -382,9 +382,7 @@ function Install-SitecoreLocal {
 				Set-Location $ConfigurationRoot
 				
 				Write-Host 'Creating configs defaults...'
-				Set-SitecoreLocalDefaults $ConfigurationFile $assetsRoot $packages $sitecoreVersion $ConfigurationTemplate
-				
-
+				Set-SitecoreLocalDefaults $ConfigurationFile $ConfigurationFileName $ConfigurationRoot $ConfigurationTemplate $assetsRoot $packages $version
 
 				Write-Host 'Updating configs...'
 				Set-SitecoreLocalOverrides @parameters

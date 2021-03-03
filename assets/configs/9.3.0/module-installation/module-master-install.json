@@ -74,9 +74,6 @@
                                                           "Type":  "string",
                                                           "Description":  "Location of bootloader data folder"
                                                       },
-                       "LoginSession":  {
-                                            "Type":  "Microsoft.PowerShell.Commands.WebRequestSession"
-                                        },
                        "SolrUrl":  {
                                        "Type":  "string",
                                        "DefaultValue":  "https://localhost:8721/solr",
@@ -170,10 +167,6 @@
                                                         "Type":  "string",
                                                         "Reference":  "SqlServer"
                                                     },
-                       "InstallModules:LoginSession":  {
-                                                           "Type":  "Microsoft.PowerShell.Commands.WebRequestSession",
-                                                           "Reference":  "LoginSession"
-                                                       },
                        "InstallModules:CorePrefix":  {
                                                          "Type":  "string",
                                                          "Reference":  "CorePrefix"

@@ -93,13 +93,24 @@
                  },
     "modules":  [
                     {
+                        "id":  "xp",
+                        "extract":  true,
+                        "url":  "https://dev.sitecore.net/~/media/88666D3532F24973939C1CC140E12A27.ashx",
+                        "fileName":  "d:\\repos\\docker-images\\build\\packages\\Sitecore 9.3.0 rev. 003498 (WDP XP0 packages).zip",
+                        "source":  "sitecore",
+                        "name":  "Sitecore Experience Platform",
+                        "install":  true,
+                        "databases":  ""
+                    },
+                    {
                         "id":  "sat",
                         "name":  "Sitecore Azure Toolkit",
                         "fileName":  "d:\\repos\\docker-images\\build\\packages\\modules\\Sitecore Azure Toolkit 2.4.0-r02514.1001.zip",
                         "url":  "https://dev.sitecore.net/~/media/B627BFA7070B40AD854A0FF08719381D.ashx",
                         "install":  true,
                         "convert":  false,
-                        "source":  "sitecore"
+                        "source":  "sitecore",
+                        "databases":  ""
                     },
                     {
                         "id":  "spe",

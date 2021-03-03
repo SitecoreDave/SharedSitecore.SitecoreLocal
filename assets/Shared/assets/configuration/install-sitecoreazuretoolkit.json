@@ -9,9 +9,6 @@
         "Destination": {
             "Type": "string"
         },
-        "LoginSession":{
-            "Type":"Microsoft.PowerShell.Commands.WebRequestSession"
-        },
         "InstallationPath":{
             "Type":"string"
         }
@@ -21,8 +18,7 @@
             "Type": "DownloadFile",
             "Params": {
                 "SourceUri": "[parameter('SitecoreAzureToolkitUri')]",
-                "DestinationPath": "[parameter('Destination')]",
-                "LoginSession": "[parameter('LoginSession')]"
+                "DestinationPath": "[parameter('Destination')]"
             }
         },
         "ExtractSitecoreAzureToolkit": {

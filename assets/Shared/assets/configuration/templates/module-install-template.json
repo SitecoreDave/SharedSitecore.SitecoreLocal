@@ -24,11 +24,6 @@
       "Type": "string",
       "DefaultValue": "",
       "Description": "The Sql Server where databases will be installed."
-    },
-    "LoginSession": {
-      "Type": "Microsoft.PowerShell.Commands.WebRequestSession",
-      "DefaultValue": "",
-      "Description": "dev.sitecore.com login session"
     }
   },
   "Variables":{},

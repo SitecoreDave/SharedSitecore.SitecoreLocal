@@ -121,7 +121,7 @@ Function Install-SitecoreAzureToolkit {
 
 		$params = @{
 			Path         = $([io.path]::combine($sharedResourcePath, 'download-assets.json'))
-			LoginSession = $global:loginSession
+			#LoginSession = $global:loginSession
 			Source       = $package.url
 			Destination  = $destination
 		}

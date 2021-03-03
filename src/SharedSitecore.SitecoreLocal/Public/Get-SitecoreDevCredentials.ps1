@@ -1,5 +1,13 @@
 Function Get-SitecoreDevCredentials {
 	Param(
+        # path if you want to use custom
+        [Parameter(Mandatory=$false)]
+        [string]$ConfigurationFileName = "XP0-SitecoreLocal.json",
+        
+        # path if you want to use custom
+        [Parameter(Mandatory=$false)]
+        [string]$ConfigurationRoot = "",
+
 		# installerVersion [default=]
 		[Parameter(Mandatory=$false)]
 		[string]$devSitecoreUsername = '',
@@ -13,7 +21,7 @@ Function Get-SitecoreDevCredentials {
 		[string]$Persist = 'User'
 	)
     try {
-    if ($null -ne $global:loginSession -and $Persist -ne 'None') { Write-Host 'Already logged in' -ForegroundColor Green; return }
+        if ($null -ne $global:loginSession -and $Persist -ne 'None') { Write-Host 'Already logged in' -ForegroundColor Green; return }
     } catch { }
     
     if ($Persist -eq 'None') {
@@ -82,9 +90,7 @@ Function Get-SitecoreDevCredentials {
     $global:loginSession = $loginSession
 
     if ($Persist -ne 'None') {
-        [Environment]::SetEnvironmentVariable("SITECORE_DEV_CREDS", $global:loginSession, $Persist)
-        [Environment]::SetEnvironmentVariable("SITECORE_DEV_CREDS", $global:credentials, $Persist)
-        [Environment]::SetEnvironmentVariable("SITECORE_DEV_USER", $user, $Persist)
-        [Environment]::SetEnvironmentVariable("SITECORE_DEV_PWD", $password, $Persist)
+        [Environment]::SetEnvironmentVariable("SITECORE_LOGINS", $global:loginSession, $Persist)
+                [Environment]::SetEnvironmentVariable("SITECORE_DEV_PWD", $password, $Persist)
     }
 }

@@ -222,6 +222,20 @@ function Set-SitecoreLocalOverrides
 	Write-Host $parametersResults.output -ForegroundColor Green
 	$parameters = $parametersResults.parameters
 
+    
+    if ([string]::IsNullOrEmpty($assetsRoot)) {        
+        $srcIndex = $PSScriptRoot.IndexOf("src")
+        if ($srcIndex -ne -1) {
+            $PSRepoRoot = $PSScriptRoot.Substring(0, $srcIndex)
+            $assetsRoot = Join-Path $PSRepoRoot "assets"
+        } else {
+            $assetsRoot = Join-Path $PSScriptRoot "assets"
+        }
+    }
+
+    if (![string]::IsNullOrEmpty($ConfigurationRoot)) { $ConfigurationRoot = Join-Path $assetsRoot "configs\$version\$ConfigurationTemplate" }
+    if (![string]::IsNullOrEmpty($ConfigurationFile)) { $ConfigurationFile = Join-Path $ConfigurationRoot "XP0-SitecoreLocal.json" }
+
     # Replace the values in this file with your installation Overrides
     # all objects in the install-settings.json file can be overridden in this file
 
@@ -236,7 +250,7 @@ function Set-SitecoreLocalOverrides
     # Assets and prerequisites
     $assets = $config.assets
 
-    if (!$ConfigurationRoot) { $ConfigurationRoot = $assets.configurationRoot }
+    if ([string]::IsNullOrEmpty($ConfigurationRoot)) { $ConfigurationRoot = $assets.configurationRoot }
 
     #$repoRoot = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
     #Write-Host "repoRoot:$repoRoot"
@@ -290,7 +304,7 @@ function Set-SitecoreLocalOverrides
     
     Write-Host "Settings SQL Overrides"
     $sql = $config.settings.sql
-    if (!$SqlPwd) { $SqlPwd = "Sql2019Rocks!" }
+    if ([string]::IsNullOrEmpty($SqlPwd) -or ($SqlPwd -eq "Str0NgPA33w0rd!!")) { $SqlPwd = "Sql2019Rocks!" }
     if ($SqlPwd -AND $SqlPwd -ne $sql.adminPassword) { $sql.adminPassword = $SqlPwd }
     if ($sqlUser -AND $sqlUser -ne $sql.adminUser) { $sql.adminUser = $sqlUser }
 	
@@ -364,6 +378,8 @@ function Set-SitecoreLocalOverrides
         $module.fileName = (Join-Path $root ("\modules\{0}" -f $module.fileName))
     }
 
+    if (!$assetsJsonPath) { $assetsJsonPath = Join-Path $ConfigurationRoot 'assets-basic.json' }
+
     $RunModules = $true
     if ($RunModules) {
         Write-Host "Running Modules from:$assetsJsonPath" -ForegroundColor Cyan
@@ -377,6 +393,7 @@ function Set-SitecoreLocalOverrides
             fileName    = Join-Path $assets.packageRepository ("\{0}" -f $sitecore.fileName)
             url         = $sitecore.url
             extract     = $sitecore.extract
+            install     = $sitecore.install
             source      = $sitecore.source
             databases   = $sitecore.databases
         }

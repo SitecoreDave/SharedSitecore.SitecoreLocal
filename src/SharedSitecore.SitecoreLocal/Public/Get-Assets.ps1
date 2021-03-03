@@ -102,10 +102,9 @@ Function Get-Assets {
 		$destination = $package.fileName
 
 		if (!(Test-Path $destination)) {
-			Get-SitecoreDevCredentials
+			//Get-SitecoreDevCredentials //LoginSession = $global:loginSession
 			$params = @{
-				Path         = $downloadJsonPath
-				LoginSession = $global:loginSession
+				Path         = $downloadJsonPath				
 				Source       = $package.url
 				Destination  = $destination
 			}
